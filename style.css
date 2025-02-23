@@ -1,61 +1,199 @@
-#game-container {
-    width: 800px;
-    margin: 0 auto;
-    text-align: center;
-    position: relative;
-}
-
-#equation-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-.equation-row {
+body {
+    font-family: 'Segoe UI', sans-serif;
+    background: linear-gradient(135deg, #e0e7ff, #f9faff);
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-bottom: 10px;
+    min-height: 100vh;
+    margin: 0;
+    padding: 0;
 }
 
-.equation-element {
-    display: flex;
-    align-items: center;
-    margin: 0 5px;
-}
-
-.equation-element label {
-    margin-right: 5px;
-}
-
-.equation-element input {
-    width: 40px;
-    padding: 2px;
-    font-size: 14px;
+.container {
     text-align: center;
+    background: white;
+    padding: 20px;
+    border-radius: 20px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+    max-width: 650px;
+    height: auto;
+    position: relative;
 }
 
-#seesaw-canvas {
-    border: 1px solid black;
+h1 {
+    color: #2c3e50;
+    font-size: 1.8em;
+    margin: 0 0 15px;
+    font-weight: 600;
 }
 
-#feedback {
-    font-size: 24px;
-    font-weight: bold;
+#equation-display {
+    font-size: 1.2em;
+    color: #34495e;
+    margin: 0 0 15px;
+    padding: 8px;
+    background: #f5f7fa;
+    border-radius: 10px;
+}
+
+#input-panel {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.term {
+    display: inline-flex;
+    align-items: center;
+    margin: 0 8px;
+}
+
+input[type="number"] {
+    width: 40px;
+    padding: 5px;
+    font-size: 1em;
+    border: 2px solid #3498db;
+    border-radius: 8px;
+    background: #fff;
+    transition: border-color 0.3s;
+}
+
+input[type="number"]:focus {
+    border-color: #2980b9;
+    outline: none;
+}
+
+#status {
+    font-size: 1.5em;
+    margin: 10px 0;
+    font-weight: 500;
+}
+
+.unbalanced {
+    color: #e74c3c;
 }
 
 .balanced {
-    color: green;
+    color: #27ae60;
 }
 
-.not-balanced {
-    color: red;
+.seesaw-container {
+    position: relative;
+    width: 600px;
+    height: 200px;
+    margin: 0 auto;
 }
 
-#creator-info {
+.seesaw {
     position: absolute;
-    bottom: 10px;
-    right: 10px;
-    font-size: 12px;
-    color: #888;
+    width: 100%;
+    height: 15px;
+    background: linear-gradient(90deg, #3498db, #5dade2);
+    top: 40%;
+    transform-origin: center;
+    transition: transform 0.5s ease;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: white;
+    font-weight: 500;
+    font-size: 0.9em;
+    border-radius: 8px;
+    padding: 0 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    left: 0;
+}
+
+.reactants-side, .products-side {
+    width: 50%;
+    text-align: center;
+}
+
+.pivot {
+    position: absolute;
+    width: 0;
+    height: 0;
+    border-left: 20px solid transparent;
+    border-right: 20px solid transparent;
+    border-top: 30px solid #e74c3c;
+    top: 40%;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+button {
+    padding: 10px 20px;
+    font-size: 1em;
+    background: linear-gradient(90deg, #2ecc71, #27ae60);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    margin-top: 5px;
+}
+
+button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+}
+
+.footer {
+    font-size: 0.8em;
+    color: #7f8c8d;
+    margin-top: 10px;
+}
+
+.hydrogen-atom {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    width: 50px;
+    height: 50px;
+}
+
+.nucleus {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 10px;
+    height: 10px;
+    background: #e74c3c;
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.electron-orbit {
+    position: absolute;
+    width: 40px;
+    height: 40px;
+    top: 50%;
+    left: 50%;
+    border: 1px dashed #3498db;
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    animation: spin 2s linear infinite;
+}
+
+.electron {
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    background: #3498db;
+    border-radius: 50%;
+    top: 5px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+@keyframes spin {
+    from {
+        transform: translate(-50%, -50%) rotate(0deg);
+    }
+    to {
+        transform: translate(-50%, -50%) rotate(360deg);
+    }
 }
