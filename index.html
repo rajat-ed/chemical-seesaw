@@ -3,22 +3,33 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chemical See-saw</title>
+    <title>Balance the Seesaw of Chemistry!</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div id="game-container">
-        <h1>Chemical See-saw </h1>
-        <div id="equation-container">
-            <div id="equation-display"></div>
+    <div class="container">
+        <div class="hydrogen-atom">
+            <div class="nucleus"></div>
+            <div class="electron-orbit">
+                <div class="electron"></div>
+            </div>
         </div>
-        <canvas id="seesaw-canvas" width="600" height="300"></canvas>
-        <div id="atom-counts"></div>
-        <div id="feedback"></div>
-        <button id="new-equation-button">New Equation</button>
-        <div id="creator-info">Created by Rajat</div>
+        <h1>Balance the Seesaw of Chemistry!</h1>
+        <div id="equation-display"></div>
+        <div id="input-panel"></div>
+        <div id="status" class="unbalanced">Unbalanced</div>
+        <div class="seesaw-container">
+            <div id="seesaw" class="seesaw">
+                <div class="reactants-side" id="reactants-count"></div>
+                <div class="products-side" id="products-count"></div>
+            </div>
+            <div class="pivot"></div>
+        </div>
+        <button id="next-equation">Next Equation</button>
+        <div class="footer">Chemical Seesaw by Rajat</div>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
     <script src="script.js"></script>
 </body>
 </html>
