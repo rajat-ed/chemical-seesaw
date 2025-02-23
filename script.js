@@ -1,294 +1,170 @@
-const equationDisplay = document.getElementById('equation-display');
-const seesawCanvas = document.getElementById('seesaw-canvas');
-const atomCounts = document.getElementById('atom-counts');
-const newEquationButton = document.getElementById('new-equation-button');
-const feedback = document.getElementById('feedback');
-const ctx = seesawCanvas.getContext('2d');
-
+// 50 different equations from simple to complex
 const equations = [
-  { "equation": "H2 + O2 -> H2O", "reactants": [{"formula": "H2", "coefficient": 1}, {"formula": "O2", "coefficient": 1}], "products": [{"formula": "H2O", "coefficient": 1}] },
-  { "equation": "Mg + O2 -> MgO", "reactants": [{"formula": "Mg", "coefficient": 1}, {"formula": "O2", "coefficient": 1}], "products": [{"formula": "MgO", "coefficient": 1}] },
-  { "equation": "Zn + HCl -> ZnCl2 + H2", "reactants": [{"formula": "Zn", "coefficient": 1}, {"formula": "HCl", "coefficient": 1}], "products": [{"formula": "ZnCl2", "coefficient": 1}, {"formula": "H2", "coefficient": 1}] },
-  { "equation": "CH4 + O2 -> CO2 + H2O", "reactants": [{"formula": "CH4", "coefficient": 1}, {"formula": "O2", "coefficient": 1}], "products": [{"formula": "CO2", "coefficient": 1}, {"formula": "H2O", "coefficient": 1}] },
-  { "equation": "Fe + O2 -> Fe2O3", "reactants": [{"formula": "Fe", "coefficient": 1}, {"formula": "O2", "coefficient": 1}], "products": [{"formula": "Fe2O3", "coefficient": 1}] },
-  { "equation": "N2 + H2 -> NH3", "reactants": [{"formula": "N2", "coefficient": 1}, {"formula": "H2", "coefficient": 1}], "products": [{"formula": "NH3", "coefficient": 1}] },
-  { "equation": "C + O2 -> CO", "reactants": [{"formula": "C", "coefficient": 1}, {"formula": "O2", "coefficient": 1}], "products": [{"formula": "CO", "coefficient": 1}] },
-  { "equation": "Na + Cl2 -> NaCl", "reactants": [{"formula": "Na", "coefficient": 1}, {"formula": "Cl2", "coefficient": 1}], "products": [{"formula": "NaCl", "coefficient": 1}] },
-  { "equation": "Al + O2 -> Al2O3", "reactants": [{"formula": "Al", "coefficient": 1}, {"formula": "O2", "coefficient": 1}], "products": [{"formula": "Al2O3", "coefficient": 1}] },
-  { "equation": "H2O2 -> H2O + O2", "reactants": [{"formula": "H2O2", "coefficient": 1}], "products": [{"formula": "H2O", "coefficient": 1}, {"formula": "O2", "coefficient": 1}] },
-  { "equation": "KCl + O2 -> KClO3", "reactants": [{"formula": "KCl", "coefficient": 1}, {"formula": "O2", "coefficient": 1}], "products": [{"formula": "KClO3", "coefficient": 1}] },
-  { "equation": "AgNO3 + NaCl -> AgCl + NaNO3", "reactants": [{"formula": "AgNO3", "coefficient": 1}, {"formula": "NaCl", "coefficient": 1}], "products": [{"formula": "AgCl", "coefficient": 1}, {"formula": "NaNO3", "coefficient": 1}] },
-  { "equation": "CuO + H2 -> Cu + H2O", "reactants": [{"formula": "CuO", "coefficient": 1}, {"formula": "H2", "coefficient": 1}], "products": [{"formula": "Cu", "coefficient": 1}, {"formula": "H2O", "coefficient": 1}] },
-  { "equation": "SO2 + O2 -> SO3", "reactants": [{"formula": "SO2", "coefficient": 1}, {"formula": "O2", "coefficient": 1}], "products": [{"formula": "SO3", "coefficient": 1}] },
-  { "equation": "K + H2O -> KOH + H2", "reactants": [{"formula": "K", "coefficient": 1}, {"formula": "H2O", "coefficient": 1}], "products": [{"formula": "KOH", "coefficient": 1}, {"formula": "H2", "coefficient": 1}] },
-  { "equation": "Li + Cl2 -> LiCl", "reactants": [{"formula": "Li", "coefficient": 1}, {"formula": "Cl2", "coefficient": 1}], "products": [{"formula": "LiCl", "coefficient": 1}] },
-  { "equation": "NH3 + O2 -> NO + H2O", "reactants": [{"formula": "NH3", "coefficient": 1}, {"formula": "O2", "coefficient": 1}], "products": [{"formula": "NO", "coefficient": 1}, {"formula": "H2O", "coefficient": 1}] },
-  { "equation": "P4 + O2 -> P4O10", "reactants": [{"formula": "P4", "coefficient": 1}, {"formula": "O2", "coefficient": 1}], "products": [{"formula": "P4O10", "coefficient": 1}] },
-  { "equation": "CaCO3 -> CaO + CO2", "reactants": [{"formula": "CaCO3", "coefficient": 1}], "products": [{"formula": "CaO", "coefficient": 1}, {"formula": "CO2", "coefficient": 1}] },
-  { "equation": "HCl + NaOH -> NaCl + H2O", "reactants": [{"formula": "HCl", "coefficient": 1}, {"formula": "NaOH", "coefficient": 1}], "products": [{"formula": "NaCl", "coefficient": 1}, {"formula": "H2O", "coefficient": 1}] },
-  { "equation": "C2H6 + O2 -> CO2 + H2O", "reactants": [{"formula": "C2H6", "coefficient": 1}, {"formula": "O2", "coefficient": 1}], "products": [{"formula": "CO2", "coefficient": 1}, {"formula": "H2O", "coefficient": 1}] },
-  { "equation": "MgCO3 -> MgO + CO2", "reactants": [{"formula": "MgCO3", "coefficient": 1}], "products": [{"formula": "MgO", "coefficient": 1}, {"formula": "CO2", "coefficient": 1}] },
-  { "equation": "H2SO4 -> SO3 + H2O", "reactants": [{"formula": "H2SO4", "coefficient": 1}], "products": [{"formula": "SO3", "coefficient": 1}, {"formula": "H2O", "coefficient": 1}] },
-  { "equation": "CH3OH + O2 -> CO2 + H2O", "reactants": [{"formula": "CH3OH", "coefficient": 1}, {"formula": "O2", "coefficient": 1}], "products": [{"formula": "CO2", "coefficient": 1}, {"formula": "H2O", "coefficient": 1}] },
-  { "equation": "FeS + O2 -> FeO + SO2", "reactants": [{"formula": "FeS", "coefficient": 1}, {"formula": "O2", "coefficient": 1}], "products": [{"formula": "FeO", "coefficient": 1}, {"formula": "SO2", "coefficient": 1}] },
-  { "equation": "Al2O3 + H2 -> Al + H2O", "reactants": [{"formula": "Al2O3", "coefficient": 1}, {"formula": "H2", "coefficient": 1}], "products": [{"formula": "Al", "coefficient": 1}, {"formula": "H2O", "coefficient": 1}] },
-  { "equation": "C3H8 + O2 -> CO2 + H2O", "reactants": [{"formula": "C3H8", "coefficient": 1}, {"formula": "O2", "coefficient": 1}], "products": [{"formula": "CO2", "coefficient": 1}, {"formula": "H2O", "coefficient": 1}] },
-  { "equation": "CO + O2 -> CO2", "reactants": [{"formula": "CO", "coefficient": 1}, {"formula": "O2", "coefficient": 1}], "products": [{"formula": "CO2", "coefficient": 1}] },
-  { "equation": "Na2O + H2O -> NaOH", "reactants": [{"formula": "Na2O", "coefficient": 1}, {"formula": "H2O", "coefficient": 1}], "products": [{"formula": "NaOH", "coefficient": 1}] },
-  { "equation": "Cu + O2 -> CuO", "reactants": [{"formula": "Cu", "coefficient": 1}, {"formula": "O2", "coefficient": 1}], "products": [{"formula": "CuO", "coefficient": 1}] },
-  { "equation": "ZnS + O2 -> ZnO + SO2", "reactants": [{"formula": "ZnS", "coefficient": 1}, {"formula": "O2", "coefficient": 1}], "products": [{"formula": "ZnO", "coefficient": 1}, {"formula": "SO2", "coefficient": 1}] },
-  { "equation": "Si + O2 -> SiO2", "reactants": [{"formula": "Si", "coefficient": 1}, {"formula": "O2", "coefficient": 1}], "products": [{"formula": "SiO2", "coefficient": 1}] },
-  { "equation": "HNO3 -> N2O5 + H2O", "reactants": [{"formula": "HNO3", "coefficient": 1}], "products": [{"formula": "N2O5", "coefficient": 1}, {"formula": "H2O", "coefficient": 1}] },
-  { "equation": "Cl2 + H2 -> HCl", "reactants": [{"formula": "Cl2", "coefficient": 1}, {"formula": "H2", "coefficient": 1}], "products": [{"formula": "HCl", "coefficient": 1}] },
-  { "equation": "SnO2 + H2 -> Sn + H2O", "reactants": [{"formula": "SnO2", "coefficient": 1}, {"formula": "H2", "coefficient": 1}], "products": [{"formula": "Sn", "coefficient": 1}, {"formula": "H2O", "coefficient": 1}] },
-  { "equation": "PCl5 + H2O -> H3PO4 + HCl", "reactants": [{"formula": "PCl5", "coefficient": 1}, {"formula": "H2O", "coefficient": 1}], "products": [{"formula": "H3PO4", "coefficient": 1}, {"formula": "HCl", "coefficient": 1}] },
-  { "equation": "KClO3 -> KCl + O2", "reactants": [{"formula": "KClO3", "coefficient": 1}], "products": [{"formula": "KCl", "coefficient": 1}, {"formula": "O2", "coefficient": 1}] },
-  { "equation": "Na2CO3 + HCl -> NaCl + H2O + CO2", "reactants": [{"formula": "Na2CO3", "coefficient": 1}, {"formula": "HCl", "coefficient": 1}], "products": [{"formula": "NaCl", "coefficient": 1}, {"formula": "H2O", "coefficient": 1}, {"formula": "CO2", "coefficient": 1}] },
-  { "equation": "BaCl2 + Na2SO4 -> BaSO4 + NaCl", "reactants": [{"formula": "BaCl2", "coefficient": 1}, {"formula": "Na2SO4", "coefficient": 1}], "products": [{"formula": "BaSO4", "coefficient": 1}, {"formula": "NaCl", "coefficient": 1}] },
-  { "equation": "CuCO3 -> CuO + CO2", "reactants": [{"formula": "CuCO3", "coefficient": 1}], "products": [{"formula": "CuO", "coefficient": 1}, {"formula": "CO2", "coefficient": 1}] },
-  { "equation": "Ag2O -> Ag + O2", "reactants": [{"formula": "Ag2O", "coefficient": 1}], "products": [{"formula": "Ag", "coefficient": 1}, {"formula": "O2", "coefficient": 1}] },
-  { "equation": "CS2 + O2 -> CO2 + SO2", "reactants": [{"formula": "CS2", "coefficient": 1}, {"formula": "O2", "coefficient": 1}], "products": [{"formula": "CO2", "coefficient": 1}, {"formula": "SO2", "coefficient": 1}] },
-  { "equation": "HCN + O2 -> N2 + H2O + CO2", "reactants": [{"formula": "HCN", "coefficient": 1}, {"formula": "O2", "coefficient": 1}], "products": [{"formula": "N2", "coefficient": 1}, {"formula": "H2O", "coefficient": 1}, {"formula": "CO2", "coefficient": 1}] }
+    { reactants: [{ formula: "H₂", atoms: { H: 2 } }, { formula: "O₂", atoms: { O: 2 } }], products: [{ formula: "H₂O", atoms: { H: 2, O: 1 } }], display: "H₂ + O₂ → H₂O" },
+    { reactants: [{ formula: "N₂", atoms: { N: 2 } }, { formula: "H₂", atoms: { H: 2 } }], products: [{ formula: "NH₃", atoms: { N: 1, H: 3 } }], display: "N₂ + H₂ → NH₃" },
+    { reactants: [{ formula: "Na", atoms: { Na: 1 } }, { formula: "Cl₂", atoms: { Cl: 2 } }], products: [{ formula: "NaCl", atoms: { Na: 1, Cl: 1 } }], display: "Na + Cl₂ → NaCl" },
+    { reactants: [{ formula: "Mg", atoms: { Mg: 1 } }, { formula: "O₂", atoms: { O: 2 } }], products: [{ formula: "MgO", atoms: { Mg: 1, O: 1 } }], display: "Mg + O₂ → MgO" },
+    { reactants: [{ formula: "H₂O", atoms: { H: 2, O: 1 } }], products: [{ formula: "H₂", atoms: { H: 2 } }, { formula: "O₂", atoms: { O: 2 } }], display: "H₂O → H₂ + O₂" },
+    { reactants: [{ formula: "Fe", atoms: { Fe: 1 } }, { formula: "S", atoms: { S: 1 } }], products: [{ formula: "FeS", atoms: { Fe: 1, S: 1 } }], display: "Fe + S → FeS" },
+    { reactants: [{ formula: "C", atoms: { C: 1 } }, { formula: "O₂", atoms: { O: 2 } }], products: [{ formula: "CO₂", atoms: { C: 1, O: 2 } }], display: "C + O₂ → CO₂" },
+    { reactants: [{ formula: "K", atoms: { K: 1 } }, { formula: "Cl₂", atoms: { Cl: 2 } }], products: [{ formula: "KCl", atoms: { K: 1, Cl: 1 } }], display: "K + Cl₂ → KCl" },
+    { reactants: [{ formula: "Al", atoms: { Al: 1 } }, { formula: "O₂", atoms: { O: 2 } }], products: [{ formula: "Al₂O₃", atoms: { Al: 2, O: 3 } }], display: "Al + O₂ → Al₂O₃" },
+    { reactants: [{ formula: "H₂", atoms: { H: 2 } }, { formula: "N₂", atoms: { N: 2 } }], products: [{ formula: "NH₃", atoms: { N: 1, H: 3 } }], display: "H₂ + N₂ → NH₃" },
+    { reactants: [{ formula: "CH₄", atoms: { C: 1, H: 4 } }, { formula: "O₂", atoms: { O: 2 } }], products: [{ formula: "CO₂", atoms: { C: 1, O: 2 } }, { formula: "H₂O", atoms: { H: 2, O: 1 } }], display: "CH₄ + O₂ → CO₂ + H₂O" },
+    { reactants: [{ formula: "Fe", atoms: { Fe: 1 } }, { formula: "O₂", atoms: { O: 2 } }], products: [{ formula: "Fe₂O₃", atoms: { Fe: 2, O: 3 } }], display: "Fe + O₂ → Fe₂O₃" },
+    { reactants: [{ formula: "HCl", atoms: { H: 1, Cl: 1 } }, { formula: "NaOH", atoms: { Na: 1, O: 1, H: 1 } }], products: [{ formula: "NaCl", atoms: { Na: 1, Cl: 1 } }, { formula: "H₂O", atoms: { H: 2, O: 1 } }], display: "HCl + NaOH → NaCl + H₂O" },
+    { reactants: [{ formula: "Zn", atoms: { Zn: 1 } }, { formula: "HCl", atoms: { H: 1, Cl: 1 } }], products: [{ formula: "ZnCl₂", atoms: { Zn: 1, Cl: 2 } }, { formula: "H₂", atoms: { H: 2 } }], display: "Zn + HCl → ZnCl₂ + H₂" },
+    { reactants: [{ formula: "Cu", atoms: { Cu: 1 } }, { formula: "S", atoms: { S: 1 } }], products: [{ formula: "CuS", atoms: { Cu: 1, S: 1 } }], display: "Cu + S → CuS" },
+    { reactants: [{ formula: "AgNO₃", atoms: { Ag: 1, N: 1, O: 3 } }, { formula: "NaCl", atoms: { Na: 1, Cl: 1 } }], products: [{ formula: "AgCl", atoms: { Ag: 1, Cl: 1 } }, { formula: "NaNO₃", atoms: { Na: 1, N: 1, O: 3 } }], display: "AgNO₃ + NaCl → AgCl + NaNO₃" },
+    { reactants: [{ formula: "H₂SO₄", atoms: { H: 2, S: 1, O: 4 } }, { formula: "NaOH", atoms: { Na: 1, O: 1, H: 1 } }], products: [{ formula: "Na₂SO₄", atoms: { Na: 2, S: 1, O: 4 } }, { formula: "H₂O", atoms: { H: 2, O: 1 } }], display: "H₂SO₄ + NaOH → Na₂SO₄ + H₂O" },
+    { reactants: [{ formula: "FeS", atoms: { Fe: 1, S: 1 } }, { formula: "O₂", atoms: { O: 2 } }], products: [{ formula: "Fe₂O₃", atoms: { Fe: 2, O: 3 } }, { formula: "SO₂", atoms: { S: 1, O: 2 } }], display: "FeS + O₂ → Fe₂O₃ + SO₂" },
+    { reactants: [{ formula: "C₂H₅OH", atoms: { C: 2, H: 5, O: 1 } }, { formula: "O₂", atoms: { O: 2 } }], products: [{ formula: "CO₂", atoms: { C: 1, O: 2 } }, { formula: "H₂O", atoms: { H: 2, O: 1 } }], display: "C₂H₅OH + O₂ → CO₂ + H₂O" },
+    { reactants: [{ formula: "Pb(NO₃)₂", atoms: { Pb: 1, N: 2, O: 6 } }, { formula: "KI", atoms: { K: 1, I: 1 } }], products: [{ formula: "PbI₂", atoms: { Pb: 1, I: 2 } }, { formula: "KNO₃", atoms: { K: 1, N: 1, O: 3 } }], display: "Pb(NO₃)₂ + KI → PbI₂ + KNO₃" },
+    { reactants: [{ formula: "C₃H₈", atoms: { C: 3, H: 8 } }, { formula: "O₂", atoms: { O: 2 } }], products: [{ formula: "CO₂", atoms: { C: 1, O: 2 } }, { formula: "H₂O", atoms: { H: 2, O: 1 } }], display: "C₃H₈ + O₂ → CO₂ + H₂O" },
+    { reactants: [{ formula: "Al", atoms: { Al: 1 } }, { formula: "H₂SO₄", atoms: { H: 2, S: 1, O: 4 } }], products: [{ formula: "Al₂(SO₄)₃", atoms: { Al: 2, S: 3, O: 12 } }, { formula: "H₂", atoms: { H: 2 } }], display: "Al + H₂SO₄ → Al₂(SO₄)₃ + H₂" },
+    { reactants: [{ formula: "Na₂CO₃", atoms: { Na: 2, C: 1, O: 3 } }, { formula: "HCl", atoms: { H: 1, Cl: 1 } }], products: [{ formula: "NaCl", atoms: { Na: 1, Cl: 1 } }, { formula: "H₂O", atoms: { H: 2, O: 1 } }, { formula: "CO₂", atoms: { C: 1, O: 2 } }], display: "Na₂CO₃ + HCl → NaCl + H₂O + CO₂" },
+    { reactants: [{ formula: "Fe₂O₃", atoms: { Fe: 2, O: 3 } }, { formula: "CO", atoms: { C: 1, O: 1 } }], products: [{ formula: "Fe", atoms: { Fe: 1 } }, { formula: "CO₂", atoms: { C: 1, O: 2 } }], display: "Fe₂O₃ + CO → Fe + CO₂" },
+    { reactants: [{ formula: "C₄H₁₀", atoms: { C: 4, H: 10 } }, { formula: "O₂", atoms: { O: 2 } }], products: [{ formula: "CO₂", atoms: { C: 1, O: 2 } }, { formula: "H₂O", atoms: { H: 2, O: 1 } }], display: "C₄H₁₀ + O₂ → CO₂ + H₂O" },
+    { reactants: [{ formula: "KClO₃", atoms: { K: 1, Cl: 1, O: 3 } }], products: [{ formula: "KCl", atoms: { K: 1, Cl: 1 } }, { formula: "O₂", atoms: { O: 2 } }], display: "KClO₃ → KCl + O₂" },
+    { reactants: [{ formula: "NH₃", atoms: { N: 1, H: 3 } }, { formula: "O₂", atoms: { O: 2 } }], products: [{ formula: "NO", atoms: { N: 1, O: 1 } }, { formula: "H₂O", atoms: { H: 2, O: 1 } }], display: "NH₃ + O₂ → NO + H₂O" },
+    { reactants: [{ formula: "CuSO₄", atoms: { Cu: 1, S: 1, O: 4 } }, { formula: "NaOH", atoms: { Na: 1, O: 1, H: 1 } }], products: [{ formula: "Cu(OH)₂", atoms: { Cu: 1, O: 2, H: 2 } }, { formula: "Na₂SO₄", atoms: { Na: 2, S: 1, O: 4 } }], display: "CuSO₄ + NaOH → Cu(OH)₂ + Na₂SO₄" },
+    { reactants: [{ formula: "HNO₃", atoms: { H: 1, N: 1, O: 3 } }, { formula: "Ca(OH)₂", atoms: { Ca: 1, O: 2, H: 2 } }], products: [{ formula: "Ca(NO₃)₂", atoms: { Ca: 1, N: 2, O: 6 } }, { formula: "H₂O", atoms: { H: 2, O: 1 } }], display: "HNO₃ + Ca(OH)₂ → Ca(NO₃)₂ + H₂O" },
+    { reactants: [{ formula: "Mg(OH)₂", atoms: { Mg: 1, O: 2, H: 2 } }, { formula: "HCl", atoms: { H: 1, Cl: 1 } }], products: [{ formula: "MgCl₂", atoms: { Mg: 1, Cl: 2 } }, { formula: "H₂O", atoms: { H: 2, O: 1 } }], display: "Mg(OH)₂ + HCl → MgCl₂ + H₂O" },
+    { reactants: [{ formula: "C₆H₁₂O₆", atoms: { C: 6, H: 12, O: 6 } }, { formula: "O₂", atoms: { O: 2 } }], products: [{ formula: "CO₂", atoms: { C: 1, O: 2 } }, { formula: "H₂O", atoms: { H: 2, O: 1 } }], display: "C₆H₁₂O₆ + O₂ → CO₂ + H₂O" },
+    { reactants: [{ formula: "Al(OH)₃", atoms: { Al: 1, O: 3, H: 3 } }, { formula: "H₂SO₄", atoms: { H: 2, S: 1, O: 4 } }], products: [{ formula: "Al₂(SO₄)₃", atoms: { Al: 2, S: 3, O: 12 } }, { formula: "H₂O", atoms: { H: 2, O: 1 } }], display: "Al(OH)₃ + H₂SO₄ → Al₂(SO₄)₃ + H₂O" },
+    { reactants: [{ formula: "Fe₃O₄", atoms: { Fe: 3, O: 4 } }, { formula: "H₂", atoms: { H: 2 } }], products: [{ formula: "Fe", atoms: { Fe: 1 } }, { formula: "H₂O", atoms: { H: 2, O: 1 } }], display: "Fe₃O₄ + H₂ → Fe + H₂O" },
+    { reactants: [{ formula: "C₅H₁₂", atoms: { C: 5, H: 12 } }, { formula: "O₂", atoms: { O: 2 } }], products: [{ formula: "CO₂", atoms: { C: 1, O: 2 } }, { formula: "H₂O", atoms: { H: 2, O: 1 } }], display: "C₅H₁₂ + O₂ → CO₂ + H₂O" },
+    { reactants: [{ formula: "KMnO₄", atoms: { K: 1, Mn: 1, O: 4 } }, { formula: "HCl", atoms: { H: 1, Cl: 1 } }], products: [{ formula: "MnCl₂", atoms: { Mn: 1, Cl: 2 } }, { formula: "KCl", atoms: { K: 1, Cl: 1 } }, { formula: "H₂O", atoms: { H: 2, O: 1 } }, { formula: "Cl₂", atoms: { Cl: 2 } }], display: "KMnO₄ + HCl → MnCl₂ + KCl + H₂O + Cl₂" },
+    { reactants: [{ formula: "Na₂S₂O₃", atoms: { Na: 2, S: 2, O: 3 } }, { formula: "I₂", atoms: { I: 2 } }], products: [{ formula: "NaI", atoms: { Na: 1, I: 1 } }, { formula: "Na₂S₄O₆", atoms: { Na: 2, S: 4, O: 6 } }], display: "Na₂S₂O₃ + I₂ → NaI + Na₂S₄O₆" },
+    { reactants: [{ formula: "C₇H₁₆", atoms: { C: 7, H: 16 } }, { formula: "O₂", atoms: { O: 2 } }], products: [{ formula: "CO₂", atoms: { C: 1, O: 2 } }, { formula: "H₂O", atoms: { H: 2, O: 1 } }], display: "C₇H₁₆ + O₂ → CO₂ + H₂O" },
+    { reactants: [{ formula: "H₃PO₄", atoms: { H: 3, P: 1, O: 4 } }, { formula: "Ca(OH)₂", atoms: { Ca: 1, O: 2, H: 2 } }], products: [{ formula: "Ca₃(PO₄)₂", atoms: { Ca: 3, P: 2, O: 8 } }, { formula: "H₂O", atoms: { H: 2, O: 1 } }], display: "H₃PO₄ + Ca(OH)₂ → Ca₃(PO₄)₂ + H₂O" },
+    { reactants: [{ formula: "FeCl₃", atoms: { Fe: 1, Cl: 3 } }, { formula: "NaOH", atoms: { Na: 1, O: 1, H: 1 } }], products: [{ formula: "Fe(OH)₃", atoms: { Fe: 1, O: 3, H: 3 } }, { formula: "NaCl", atoms: { Na: 1, Cl: 1 } }], display: "FeCl₃ + NaOH → Fe(OH)₃ + NaCl" },
+    { reactants: [{ formula: "C₈H₁₈", atoms: { C: 8, H: 18 } }, { formula: "O₂", atoms: { O: 2 } }], products: [{ formula: "CO₂", atoms: { C: 1, O: 2 } }, { formula: "H₂O", atoms: { H: 2, O: 1 } }], display: "C₈H₁₈ + O₂ → CO₂ + H₂O" },
+    { reactants: [{ formula: "K₂Cr₂O₇", atoms: { K: 2, Cr: 2, O: 7 } }, { formula: "H₂SO₄", atoms: { H: 2, S: 1, O: 4 } }], products: [{ formula: "K₂SO₄", atoms: { K: 2, S: 1, O: 4 } }, { formula: "Cr₂(SO₄)₃", atoms: { Cr: 2, S: 3, O: 12 } }, { formula: "H₂O", atoms: { H: 2, O: 1 } }, { formula: "O₂", atoms: { O: 2 } }], display: "K₂Cr₂O₇ + H₂SO₄ → K₂SO₄ + Cr₂(SO₄)₃ + H₂O + O₂" },
+    { reactants: [{ formula: "NH₄NO₃", atoms: { N: 2, H: 4, O: 3 } }], products: [{ formula: "N₂O", atoms: { N: 2, O: 1 } }, { formula: "H₂O", atoms: { H: 2, O: 1 } }], display: "NH₄NO₃ → N₂O + H₂O" },
+    { reactants: [{ formula: "C₆H₅OH", atoms: { C: 6, H: 6, O: 1 } }, { formula: "O₂", atoms: { O: 2 } }], products: [{ formula: "CO₂", atoms: { C: 1, O: 2 } }, { formula: "H₂O", atoms: { H: 2, O: 1 } }], display: "C₆H₅OH + O₂ → CO₂ + H₂O" },
+    { reactants: [{ formula: "BaCl₂", atoms: { Ba: 1, Cl: 2 } }, { formula: "Na₃PO₄", atoms: { Na: 3, P: 1, O: 4 } }], products: [{ formula: "Ba₃(PO₄)₂", atoms: { Ba: 3, P: 2, O: 8 } }, { formula: "NaCl", atoms: { Na: 1, Cl: 1 } }], display: "BaCl₂ + Na₃PO₄ → Ba₃(PO₄)₂ + NaCl" },
+    { reactants: [{ formula: "C₁₀H₂₂", atoms: { C: 10, H: 22 } }, { formula: "O₂", atoms: { O: 2 } }], products: [{ formula: "CO₂", atoms: { C: 1, O: 2 } }, { formula: "H₂O", atoms: { H: 2, O: 1 } }], display: "C₁₀H₂₂ + O₂ → CO₂ + H₂O" },
+    { reactants: [{ formula: "Fe₂(SO₄)₃", atoms: { Fe: 2, S: 3, O: 12 } }, { formula: "KOH", atoms: { K: 1, O: 1, H: 1 } }], products: [{ formula: "Fe(OH)₃", atoms: { Fe: 1, O: 3, H: 3 } }, { formula: "K₂SO₄", atoms: { K: 2, S: 1, O: 4 } }], display: "Fe₂(SO₄)₃ + KOH → Fe(OH)₃ + K₂SO₄" },
+    { reactants: [{ formula: "C₆H₁₄", atoms: { C: 6, H: 14 } }, { formula: "O₂", atoms: { O: 2 } }], products: [{ formula: "CO₂", atoms: { C: 1, O: 2 } }, { formula: "H₂O", atoms: { H: 2, O: 1 } }], display: "C₆H₁₄ + O₂ → CO₂ + H₂O" },
+    { reactants: [{ formula: "H₂C₂O₄", atoms: { H: 2, C: 2, O: 4 } }, { formula: "KMnO₄", atoms: { K: 1, Mn: 1, O: 4 } }], products: [{ formula: "MnO₂", atoms: { Mn: 1, O: 2 } }, { formula: "CO₂", atoms: { C: 1, O: 2 } }, { formula: "KOH", atoms: { K: 1, O: 1, H: 1 } }, { formula: "H₂O", atoms: { H: 2, O: 1 } }], display: "H₂C₂O₄ + KMnO₄ → MnO₂ + CO₂ + KOH + H₂O" },
+    { reactants: [{ formula: "Zn(NO₃)₂", atoms: { Zn: 1, N: 2, O: 6 } }, { formula: "NaOH", atoms: { Na: 1, O: 1, H: 1 } }], products: [{ formula: "Zn(OH)₂", atoms: { Zn: 1, O: 2, H: 2 } }, { formula: "NaNO₃", atoms: { Na: 1, N: 1, O: 3 } }], display: "Zn(NO₃)₂ + NaOH → Zn(OH)₂ + NaNO₃" },
+    { reactants: [{ formula: "C₉H₂₀", atoms: { C: 9, H: 20 } }, { formula: "O₂", atoms: { O: 2 } }], products: [{ formula: "CO₂", atoms: { C: 1, O: 2 } }, { formula: "H₂O", atoms: { H: 2, O: 1 } }], display: "C₉H₂₀ + O₂ → CO₂ + H₂O" }
 ];
 
-let currentEquation = getRandomEquation();
+let currentEquationIndex = 0;
+let hasCelebrated = false;
 
-function getRandomEquation() {
-    const randomIndex = Math.floor(Math.random() * equations.length);
-    return equations[randomIndex];
-}
+function loadEquation() {
+    const equation = equations[currentEquationIndex];
+    document.getElementById('equation-display').innerHTML = equation.display;
 
-function parseFormula(formula) {
-    const atomCounts = {};
-    const regex = /([A-Z][a-z]*)(\d*)/g;
-    let match;
+    // Setup input panel with coefficients for each term
+    const inputPanel = document.getElementById('input-panel');
+    inputPanel.innerHTML = '';
 
-    while ((match = regex.exec(formula)) !== null) {
-        const element = match[1];
-        const count = match[2] ? parseInt(match[2]) : 1;
-        atomCounts[element] = (atomCounts[element] || 0) + count;
-    }
-    return atomCounts;
-}
-
-function calculateAtomCounts(equationData) {
-    const reactantCounts = {};
-    const productCounts = {};
-
-    equationData.reactants.forEach(reactant => {
-        const atomCounts = parseFormula(reactant.formula);
-        for (const element in atomCounts) {
-            reactantCounts[element] = (reactantCounts[element] || 0) + atomCounts[element] * reactant.coefficient;
-        }
+    // Reactants
+    equation.reactants.forEach((term, i) => {
+        const div = document.createElement('div');
+        div.className = 'term';
+        div.innerHTML = `<input type="number" id="r${i}" min="1" value="1"> ${term.formula}`;
+        inputPanel.appendChild(div);
+        if (i < equation.reactants.length - 1) inputPanel.appendChild(document.createTextNode(' + '));
     });
 
-    equationData.products.forEach(product => {
-        const atomCounts = parseFormula(product.formula);
-        for (const element in atomCounts) {
-            productCounts[element] = (productCounts[element] || 0) + atomCounts[element] * product.coefficient;
-        }
+    // Arrow
+    inputPanel.appendChild(document.createTextNode(' → '));
+
+    // Products
+    equation.products.forEach((term, i) => {
+        const div = document.createElement('div');
+        div.className = 'term';
+        div.innerHTML = `<input type="number" id="p${i}" min="1" value="1"> ${term.formula}`;
+        inputPanel.appendChild(div);
+        if (i < equation.products.length - 1) inputPanel.appendChild(document.createTextNode(' + '));
     });
 
-    return { reactants: reactantCounts, products: productCounts };
-}
-
-function drawSeesaw(imbalance, reactantsCounts, productsCounts) {
-    // Ensure context exists
-    if (!ctx) {
-        console.error("Canvas context not initialized!");
-        return;
-    }
-
-    // Clear the canvas
-    ctx.clearRect(0, 0, seesawCanvas.width, seesawCanvas.height);
-
-    const beamStartX = 50;
-    const beamEndX = seesawCanvas.width - 50;
-    const beamY = seesawCanvas.height / 2;
-    const tiltAngle = imbalance * 0.1;
-
-    // Draw seesaw beam
-    ctx.beginPath();
-    ctx.moveTo(beamStartX, beamY + Math.sin(tiltAngle) * 50);
-    ctx.lineTo(beamEndX, beamY - Math.sin(tiltAngle) * 50);
-    ctx.strokeStyle = 'black';
-    ctx.lineWidth = 5;
-    ctx.stroke();
-
-    // Draw pivot
-    const pivotX = seesawCanvas.width / 2;
-    const pivotY = beamY;
-    ctx.beginPath();
-    ctx.arc(pivotX, pivotY, 10, 0, 2 * Math.PI);
-    ctx.fillStyle = 'red';
-    ctx.fill();
-
-    // Draw labels with atom counts for reactants
-    let labelY = beamY - 50; // Position above the seesaw
-    let labelXReactants = 100;  // Starting X position
-
-    ctx.fillStyle = 'black';
-    ctx.font = '12px Arial';
-
-    for (const element in reactantsCounts) {
-        ctx.fillText(`${element}: ${reactantsCounts[element]}`, labelXReactants, labelY);
-        labelXReactants += 50; // Adjust horizontal spacing as needed
-    }
-    // Draw labels with atom counts for products
-    let labelXProducts = 400;  // Starting X position
-    for (const element in productsCounts) {
-        ctx.fillText(`${element}: ${productsCounts[element]}`, labelXProducts, labelY);
-        labelXProducts += 50; // Adjust horizontal spacing as needed
-    }
-}
-
-function updateAtomCountsDisplay(reactantCounts, productCounts) {
-    let html = "<table><tr><th>Element</th><th>Reactants</th><th>Products</th></tr>";
-    const allElements = new Set([...Object.keys(reactantCounts), ...Object.keys(productCounts)]);
-
-    for (const element of allElements) {
-        const reactantCount = reactantCounts[element] || 0;
-        const productCount = productCounts[element] || 0;
-        html += `<tr><td>${element}</td><td>${reactantCount}</td><td>${productCount}</td></tr>`;
-    }
-
-    html += "</table>";
-    atomCounts.innerHTML = html;
-}
-
-function formatSubscript(formula) {
-    return formula.replace(/(\d+)/g, '<sub>$1</sub>');
-}
-
-function updateEquationDisplay() {
-    equationDisplay.innerHTML = '';
-    const equationRow = document.createElement('div');
-    equationRow.classList.add('equation-row');
-
-    // Process Reactants
-    currentEquation.reactants.forEach((reactant, index) => {
-        const elementDiv = document.createElement('div');
-        elementDiv.classList.add('equation-element');
-
-        const input = document.createElement('input');
-        input.type = 'number';
-        input.id = `reactant${index}`;
-        input.value = reactant.coefficient;
-        input.min = 1;
-        input.oninput = checkBalance;
-        elementDiv.appendChild(input);
-
-        const label = document.createElement('label');
-        label.innerHTML = formatSubscript(reactant.formula);
-        elementDiv.appendChild(label);
-
-        equationRow.appendChild(elementDiv);
-
-        if (index < currentEquation.reactants.length - 1) {
-            const plusSign = document.createElement('span');
-            plusSign.textContent = ' + ';
-            equationRow.appendChild(plusSign);
-        }
+    // Add event listeners for automatic balance check
+    const inputs = inputPanel.querySelectorAll('input');
+    inputs.forEach(input => {
+        input.addEventListener('input', checkBalance);
     });
 
-    // Add the '->' arrow
-    const arrowSpan = document.createElement('span');
-    arrowSpan.textContent = '  ----------->  ';
-    equationRow.appendChild(arrowSpan);
-
-    // Process Products
-    currentEquation.products.forEach((product, index) => {
-        const elementDiv = document.createElement('div');
-        elementDiv.classList.add('equation-element');
-
-        const input = document.createElement('input');
-        input.type = 'number';
-        input.id = `product${index}`;
-        input.value = product.coefficient;
-        input.min = 1;
-        input.oninput = checkBalance;
-        elementDiv.appendChild(input);
-
-        const label = document.createElement('label');
-        label.innerHTML = formatSubscript(product.formula);
-        elementDiv.appendChild(label);
-
-        equationRow.appendChild(elementDiv);
-
-        if (index < currentEquation.products.length - 1) {
-            const plusSign = document.createElement('span');
-            plusSign.textContent = ' + ';
-            equationRow.appendChild(plusSign);
-        }
-    });
-
-    equationDisplay.appendChild(equationRow);
-}
-
-function checkBalance() {
-    // Update Coefficients
-    currentEquation.reactants.forEach((reactant, index) => {
-        const inputElement = document.getElementById(`reactant${index}`);
-        reactant.coefficient = parseInt(inputElement.value || 1);
-    });
-    currentEquation.products.forEach((product, index) => {
-        const inputElement = document.getElementById(`product${index}`);
-        product.coefficient = parseInt(inputElement.value || 1);
-    });
-
-    // Calculate Atom Counts
-    const { reactants: reactantsCounts, products: productsCounts } = calculateAtomCounts(currentEquation);
-
-    // Update Atom Counts Display
-    updateAtomCountsDisplay(reactantsCounts, productsCounts);
-
-    // Calculate Imbalance
-    let imbalance = 0;
-    for (const element in reactantsCounts) {
-        imbalance += (reactantsCounts[element] - (productsCounts[element] || 0));
-    }
-    for (const element in productsCounts) {
-        if (!reactantsCounts[element]) {
-            imbalance -= productsCounts[element];
-        }
-    }
-
-    // Draw Seesaw
-    drawSeesaw(imbalance, reactantsCounts, productsCounts);
-
-    // Check if Balanced
-    let isBalanced = true;
-    for (const element in reactantsCounts) {
-        if (reactantsCounts[element] !== (productsCounts[element] || 0)) {
-            isBalanced = false;
-            break;
-        }
-    }
-    for (const element in productsCounts) {
-        if (reactantsCounts[element] === undefined && productsCounts[element] !== 0) {
-            isBalanced = false;
-            break;
-        }
-    }
-
-    // Update Feedback
-    if (isBalanced) {
-        feedback.textContent = "Balanced!";
-        feedback.className = "balanced";
-    } else {
-        feedback.textContent = "Not balanced. Try again!";
-        feedback.className = "not-balanced";
-    }
-}
-
-
-
-function loadNewEquation() {
-    currentEquation = getRandomEquation();
-    updateEquationDisplay();
+    // Reset celebration flag and check balance
+    hasCelebrated = false;
     checkBalance();
 }
 
-updateEquationDisplay();
-newEquationButton.addEventListener('click', loadNewEquation);
-checkBalance();
+function checkBalance() {
+    const equation = equations[currentEquationIndex];
+    const reactantsAtoms = {};
+    const productsAtoms = {};
+
+    // Calculate total atoms for reactants
+    let reactantTotal = 0;
+    equation.reactants.forEach((term, i) => {
+        const coeff = parseInt(document.getElementById(`r${i}`).value) || 1;
+        for (let atom in term.atoms) {
+            reactantsAtoms[atom] = (reactantsAtoms[atom] || 0) + term.atoms[atom] * coeff;
+        }
+        reactantTotal += Object.values(term.atoms).reduce((a, b) => a + b, 0) * coeff;
+    });
+
+    // Calculate total atoms for products
+    let productTotal = 0;
+    equation.products.forEach((term, i) => {
+        const coeff = parseInt(document.getElementById(`p${i}`).value) || 1;
+        for (let atom in term.atoms) {
+            productsAtoms[atom] = (productsAtoms[atom] || 0) + term.atoms[atom] * coeff;
+        }
+        productTotal += Object.values(term.atoms).reduce((a, b) => a + b, 0) * coeff;
+    });
+
+    // Display individual atom counts on seesaw
+    const reactantDisplay = Object.entries(reactantsAtoms)
+        .map(([atom, count]) => `${atom}: ${count}`)
+        .join(', ');
+    const productDisplay = Object.entries(productsAtoms)
+        .map(([atom, count]) => `${atom}: ${count}`)
+        .join(', ');
+    document.getElementById('reactants-count').textContent = reactantDisplay || '0';
+    document.getElementById('products-count').textContent = productDisplay || '0';
+
+    // Check if balanced
+    let isBalanced = true;
+    const allAtoms = new Set([...Object.keys(reactantsAtoms), ...Object.keys(productsAtoms)]);
+    for (let atom of allAtoms) {
+        if ((reactantsAtoms[atom] || 0) !== (productsAtoms[atom] || 0)) {
+            isBalanced = false;
+            break;
+        }
+    }
+
+    // Update seesaw tilt (leans toward heavier side)
+    const seesaw = document.getElementById('seesaw');
+    const status = document.getElementById('status');
+    if (isBalanced) {
+        seesaw.style.transform = 'rotate(0deg)';
+        status.textContent = 'Balanced';
+        status.className = 'balanced';
+        if (!hasCelebrated) {
+            confetti({ particleCount: 150, spread: 90, origin: { y: 0.6 } });
+            hasCelebrated = true;
+        }
+    } else {
+        const tilt = (productTotal - reactantTotal) * 0.5;
+        seesaw.style.transform = `rotate(${Math.min(Math.max(tilt, -20), 20)}deg)`;
+        status.textContent = 'Unbalanced';
+        status.className = 'unbalanced';
+        hasCelebrated = false;
+    }
+}
+
+// Event listener for next equation
+document.getElementById('next-equation').addEventListener('click', () => {
+    currentEquationIndex = (currentEquationIndex + 1) % equations.length;
+    loadEquation();
+});
+
+// Initial load
+loadEquation();
