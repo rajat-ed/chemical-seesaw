@@ -57,10 +57,15 @@ let hasCelebrated = false;
 
 function loadEquation() {
     const equation = equations[currentEquationIndex];
-    document.getElementById('equation-display').innerHTML = equation.display;
-
-    // Setup input panel with coefficients for each term
+    const equationDisplay = document.getElementById('equation-display');
     const inputPanel = document.getElementById('input-panel');
+
+    if (!equationDisplay || !inputPanel) {
+        console.error("Required DOM elements not found!");
+        return;
+    }
+
+    equationDisplay.innerHTML = equation.display;
     inputPanel.innerHTML = '';
 
     // Reactants
@@ -140,15 +145,22 @@ function checkBalance() {
         }
     }
 
-    // Update seesaw tilt (leans toward heavier side)
+    // Update seesaw tilt and trigger sound/confetti when balanced
     const seesaw = document.getElementById('seesaw');
     const status = document.getElementById('status');
+    const successSound = document.getElementById('success-sound');
+    const soundToggle = document.getElementById('sound-toggle');
+
     if (isBalanced) {
         seesaw.style.transform = 'rotate(0deg)';
         status.textContent = 'Balanced';
         status.className = 'balanced';
         if (!hasCelebrated) {
             confetti({ particleCount: 150, spread: 90, origin: { y: 0.6 } });
+            if (successSound && soundToggle.checked) { // Play sound only if toggle is on
+                successSound.currentTime = 0; // Reset to start
+                successSound.play().catch(err => console.error("Audio playback failed:", err));
+            }
             hasCelebrated = true;
         }
     } else {
@@ -166,5 +178,11 @@ document.getElementById('next-equation').addEventListener('click', () => {
     loadEquation();
 });
 
-// Initial load
-loadEquation();
+// Initial load with error checking
+document.addEventListener('DOMContentLoaded', () => {
+    if (equations.length > 0) {
+        loadEquation();
+    } else {
+        console.error("No equations defined!");
+    }
+});
